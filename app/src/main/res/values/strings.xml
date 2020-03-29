@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="hint">Начните печатать текст</string>
+    <string name="load_image">Загрузить картинку для конвертации</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="convert_to_png">Конвертировать в PNG</string>
 </resources>
