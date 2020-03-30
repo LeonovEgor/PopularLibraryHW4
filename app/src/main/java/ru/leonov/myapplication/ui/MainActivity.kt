@@ -14,14 +14,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.jakewharton.rxbinding.view.RxView
 import com.jakewharton.rxbinding.widget.RxTextView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.leonov.myapplication.R
 import ru.leonov.myapplication.mvp.model.entities.Image
 import ru.leonov.myapplication.mvp.presenters.MainPresenter
 import ru.leonov.myapplication.mvp.view.IMainView
-import ru.leonov.myapplication.ui.converter.imageToBitmap
+import ru.leonov.myapplication.ui.utils.toBitmap
 import rx.Subscription
-
 
 class MainActivity : AppCompatActivity(), IMainView {
 
@@ -37,8 +37,8 @@ class MainActivity : AppCompatActivity(), IMainView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val imageHelper = ImageHelper()
-        presenter = MainPresenter(imageHelper, this, AndroidSchedulers.mainThread())
+
+        presenter = MainPresenter(this, AndroidSchedulers.mainThread())
     }
 
     override fun onStart() {
@@ -85,7 +85,18 @@ class MainActivity : AppCompatActivity(), IMainView {
     }
 
     override fun showImage(image: Image) {
-        image_view.setImageBitmap(imageToBitmap(image))
+        image_view.setImageBitmap(image.toBitmap())
+    }
+
+    override fun savePng(image: Image, quality: Int) {
+        ImageHelper().savePngImage(image, quality, this)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe ({ pngImage ->
+                presenter.onImageConverted(pngImage)
+            }, {
+                presenter.onError(it)
+            })
     }
 
     private fun selectImageInAlbum() {
@@ -135,9 +146,10 @@ class MainActivity : AppCompatActivity(), IMainView {
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
             data?.let {
                 it.data?.let {uri ->
+
                     val imageStream = contentResolver.openInputStream(uri)
                     imageStream?.let { stream ->
-                        presenter.onImageSelected(stream.readBytes())
+                        presenter.onImageSelected(Image(stream.readBytes()))
                     }
                 }
             }

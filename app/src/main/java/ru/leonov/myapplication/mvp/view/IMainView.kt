@@ -7,4 +7,5 @@ interface IMainView {
     fun updateText(text: String)
     fun loadImage()
     fun showImage(image: Image)
+    fun savePng(image: Image, quality: Int)
 }

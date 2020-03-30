@@ -1,13 +1,11 @@
 package ru.leonov.myapplication.mvp.presenters
 
 import io.reactivex.rxjava3.core.Scheduler
-import ru.leonov.myapplication.mvp.model.IImageHelper
 import ru.leonov.myapplication.mvp.model.entities.Image
 import ru.leonov.myapplication.mvp.view.IMainView
-import io.reactivex.rxjava3.schedulers.Schedulers
 
 
-class MainPresenter (private val imageHelper: IImageHelper, private val view: IMainView, private val mainThreadScheduler: Scheduler) {
+class MainPresenter (private val view: IMainView, private val mainThreadScheduler: Scheduler) {
 
     private val quality = 100
 
@@ -17,16 +15,16 @@ class MainPresenter (private val imageHelper: IImageHelper, private val view: IM
 
     fun loadImagePressed() = view.loadImage()
 
-    fun onImageSelected(data: ByteArray) {
-        val image = Image(data)
-        imageHelper.convertImage(image, quality)
-            .subscribeOn(Schedulers.io())
-            .observeOn(mainThreadScheduler)
-            .subscribe ({ pngImage ->
-                view.showImage(pngImage)
-            }, {
-            view.showError(it.toString())
-        })
+    fun onImageSelected(image: Image) {
+        view.savePng(image, quality)
+    }
+
+    fun onImageConverted(image: Image) {
+        view.showImage(image)
+    }
+
+    fun onError(it: Throwable?) {
+        view.showError(it.toString())
     }
 
 }
