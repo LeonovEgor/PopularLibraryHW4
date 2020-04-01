@@ -4,36 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MainActivity"
+    tools:context=".ui.activity.MainActivity"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView"
+    <fragment
+        android:id="@+id/container_text"
+        android:name="ru.leonov.myapplication.ui.fragment.TextFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:singleLine="false" />
+        android:layout_height="wrap_content" />
 
-    <com.google.android.material.textfield.TextInputLayout
+    <fragment
+        android:id="@+id/container_image"
+        android:name="ru.leonov.myapplication.ui.fragment.ImageFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/ti_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <Button
-        android:id="@+id/btn_load_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/load_image"/>
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
